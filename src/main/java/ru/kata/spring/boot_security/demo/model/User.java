@@ -1,9 +1,6 @@
 package ru.kata.spring.boot_security.demo.model;
 
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
@@ -32,8 +29,7 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany
-    @Fetch(FetchMode.JOIN)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

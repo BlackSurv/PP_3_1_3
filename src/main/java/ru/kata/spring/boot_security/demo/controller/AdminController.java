@@ -30,13 +30,6 @@ public class AdminController {
     }
 
     @GetMapping(value = "/admin")
-    public String adminPage(Model model, Authentication authentication) {
-        PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
-        model.addAttribute("loginUser", personDetails.getUser());
-        return "admin";
-    }
-
-    @GetMapping(value = "/admin/users")
     public String usersList(Model model, Authentication authentication) {
         PersonDetails personDetails = (PersonDetails) authentication.getPrincipal();
         model.addAttribute("loginUser", personDetails.getUser());
@@ -44,14 +37,14 @@ public class AdminController {
         return "users";
     }
 
-    @GetMapping(value = "/admin/users/add")
+    @GetMapping(value = "/admin/add")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
         model.addAttribute("roles", roleService.getAllRoles());
         return "add";
     }
 
-    @GetMapping(value = "/admin/users/edit")
+    @GetMapping(value = "/admin/edit")
     public String editUser(@RequestParam("userId") Long userId, Model model) {
         model.addAttribute("user", userService.getUserById(userId));
         model.addAttribute("roles", roleService.getAllRoles());
@@ -61,7 +54,7 @@ public class AdminController {
     @PostMapping(value = "/delete")
     public String delete(@RequestParam("userId") Long userId) {
         userService.deleteById(userId);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 
     @PostMapping(value = "/add")
@@ -74,7 +67,7 @@ public class AdminController {
             user.setRoles(roleSet);
         }
         userService.add(user);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 
     @PostMapping(value = "/update")
@@ -87,6 +80,6 @@ public class AdminController {
             user.setRoles(roleSet);
         }
         userService.update(user);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 }
