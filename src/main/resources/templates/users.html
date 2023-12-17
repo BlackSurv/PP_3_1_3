@@ -4,73 +4,56 @@
     <meta charset="UTF-8">
 
     <title>Users list</title>
-    <style>
-        button {
-            margin-top: 10px;
-        }
+    <link href="/css/stylesheet.css" type="text/css" rel="stylesheet">
 
-        table {
-            width: 100%;
-            margin: 20px 0 20px 0;
-            border: 1px solid #dddddd;
-            border-collapse: collapse;
-        }
-
-        table th {
-            font-weight: bold;
-            padding: 5px;
-            background: #efefef;
-            border: 1px solid #dddddd;
-        }
-
-        table td {
-            border: 1px solid #dddddd;
-            padding: 5px;
-        }
-    </style>
 </head>
 <body>
-<form th:action="@{/user/logout}" th:method="GET">
-    <button type="submit">Log out</button>
-</form>
-<a th:href="@{/admin}">
-    <button>
-        Личный кабинет
-    </button>
-</a>
-<h2 th:text="${loginUser.getFirstName()} + ', добро пожаловать'"></h2>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Last name</th>
-        <th>Age</th>
-        <th>Username</th>
-        <th>Roles</th>
-        <th></th>
-    </tr>
-    <tr th:each="user: ${users}">
-        <td th:text="${user.getId()}"></td>
-        <td th:text="${user.getFirstName()}"></td>
-        <td th:text="${user.getLastName()}"></td>
-        <td th:text="${user.getAge()}"></td>
-        <td th:text="${user.getUsername()}"></td>
-        <td>
-            <span th:each="role : ${user.getRoles()}" th:text="${role.getName()} + '; '" id="roles"></span>
-        </td>
-        <td>
-            <form th:action="@{/admin/users/edit}" th:method="GET">
-                <button type="submit" name="userId" th:value="${user.id}">Редактировать</button>
-            </form>
-            <form th:action="@{/delete}" th:method="POST" th:unless="${loginUser.getUsername()==user.getUsername()}">
-                <button type="submit" name="userId" th:value="${user.getId()}">Удалить</button>
-            </form>
-        </td>
-    </tr>
-</table>
-<form th:action="@{/admin/users/add}" th:method="GET">
-    <button type="submit">Добавить запись</button>
-</form>
-
+<div id="sidebar">
+    <form th:action="@{/user/logout}" th:method="GET">
+        <button type="submit">Log out</button>
+    </form>
+    <div th:each="role : ${loginUser.getRoles()}" th:if="${role.authority.contains('ROLE_ADMIN')}">
+        <a th:href="@{/admin}">Администратор</a>
+    </div>
+    <div>
+        <a th:href="@{/user}">Пользователь</a>
+    </div>
+</div>
+<div id="content">
+    <h2 th:text="${loginUser.getFirstName()} + ', добро пожаловать'"></h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Last name</th>
+            <th>Age</th>
+            <th>Username</th>
+            <th>Roles</th>
+            <th></th>
+        </tr>
+        <tr th:each="user: ${users}">
+            <td th:text="${user.getId()}"></td>
+            <td th:text="${user.getFirstName()}"></td>
+            <td th:text="${user.getLastName()}"></td>
+            <td th:text="${user.getAge()}"></td>
+            <td th:text="${user.getUsername()}"></td>
+            <td>
+                <span th:each="role : ${user.getRoles()}" th:text="${role.getName()} + '; '" id="roles"></span>
+            </td>
+            <td>
+                <form th:action="@{/admin/edit}" th:method="GET">
+                    <button type="submit" name="userId" th:value="${user.id}">Редактировать</button>
+                </form>
+                <form th:action="@{/delete}" th:method="POST"
+                      th:unless="${loginUser.getUsername()==user.getUsername()}">
+                    <button type="submit" name="userId" th:value="${user.getId()}">Удалить</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <form th:action="@{/admin/add}" th:method="GET">
+        <button type="submit">Добавить запись</button>
+    </form>
+</div>
 </body>
 </html>
